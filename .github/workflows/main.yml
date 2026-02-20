@@ -13,9 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Prepare dummy folder with initial content
       - name: Prepare dummy folder
-        run: mkdir -p .dummy-cache-folder
+        run: |
+          mkdir -p .dummy-cache-folder
+          echo "Initial dummy content" > .dummy-cache-folder/info.txt
 
+      # Prime cache step
       - name: Prime cache step
         id: prime-cache-b16587c
         uses: actions/cache@v4
@@ -25,8 +29,15 @@ jobs:
           restore-keys: |
             cache-b16587c
 
+      # Show cache result safely
       - name: Show cache result
-        run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit || 'false' }}"
+        run: |
+          if [ -n "${{ steps.prime-cache-b16587c.outputs.cache-hit }}" ]; then
+            echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
+          else
+            echo "Cache hit? false"
+          fi
 
+      # Update dummy dependencies
       - name: Install dummy dependencies
         run: echo "Simulating dependencies" > .dummy-cache-folder/info.txt
