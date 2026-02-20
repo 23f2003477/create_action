@@ -1,6 +1,5 @@
 name: CI with Cache Demo
 
-# Trigger workflow on pushes or pull requests to main
 on:
   push:
     branches: [ main ]
@@ -12,24 +11,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository code
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # Step 1: Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Step 2: Prime the cache
-    - name: Prime cache step
-      id: prime-cache-b16587c
-      uses: actions/cache@v4
-      with:
-        path: .dummy-cache-folder
-        key: cache-b16587c
+      # Step 2: Prime the cache
+      - name: Prime cache step
+        id: prime-cache-b16587c   # <--- This ID must match exactly in the next step
+        uses: actions/cache@v4
+        with:
+          path: .dummy-cache-folder
+          key: cache-b16587c
 
-    # Step 3: Show cache hit/miss
-    - name: Show cache result
-      run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
+      # Step 3: Show cache result
+      - name: Show cache result
+        run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
 
-    # Step 4: Create dummy "dependencies" to cache
-    - name: Install dummy dependencies
-      run: |
-        mkdir -p .dummy-cache-folder
-        echo "Simulating dependencies" > .dummy-cache-folder/info.txt
+      # Step 4: Create dummy dependencies to populate cache
+      - name: Install dummy dependencies
+        run: |
+          mkdir -p .dummy-cache-folder
+          echo "Simulating dependencies" > .dummy-cache-folder/info.txt
