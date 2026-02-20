@@ -1,32 +1,18 @@
-name: CI with Cache
+- name: Prime cache step
+  id: prime-cache-b16587c
+  uses: actions/cache@v4
+  with:
+    path: |
+      .dummy-cache-folder
+    key: cache-b16587c
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+- name: Show cache result
+  run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    # Step: Set up caching
-    - name: Prime cache step
-      id: prime-cache-b16587c
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/pip       # Example: Python packages cache
-          node_modules       # Example: Node.js packages cache
-        key: cache-b16587c
-
-    - name: Show cache result
-      run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
-
+- name: Install dummy dependencies
+  run: |
+    mkdir -p .dummy-cache-folder
+    echo "Simulating dependencies" > .dummy-cache-folder/info.txt
     - name: Install dependencies
       run: |
         pip install -r requirements.txt || npm install
