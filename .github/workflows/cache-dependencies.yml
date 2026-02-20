@@ -3,7 +3,7 @@ name: Cache Dependencies Example
 on:
   push:
     branches:
-      - main   # or your branch name
+      - main
   pull_request:
 
 jobs:
@@ -11,17 +11,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # 1️⃣ Checkout your repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # 2️⃣ Cache Node.js dependencies
     - name: Cache dependencies
       id: prime-cache-b16587c
       uses: actions/cache@v4
       with:
         path: |
-          ~/.npm       # if using Node.js
-          # add other dependency folders if needed
+          ~/.npm
+          node_modules
         key: cache-b16587c
 
+    # 3️⃣ Install dependencies (will use cache if available)
+    - name: Install dependencies
+      run: npm install
+
+    # 4️⃣ Show cache result clearly
     - name: Show cache result
-      run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
+      run: |
+        if [ "${{ steps.prime-cache-b16587c.outputs.cache-hit }}" = "true" ]; then
+          echo "Cache hit? true"
+        else
+          echo "Cache hit? false (first run or cache miss)"
+        fi
