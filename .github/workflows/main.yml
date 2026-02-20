@@ -1,18 +1,36 @@
-- name: Prime cache step
-  id: prime-cache-b16587c
-  uses: actions/cache@v4
-  with:
-    path: |
-      .dummy-cache-folder
-    key: cache-b16587c
+name: CI with Cache Demo
 
-- name: Show cache result
-  run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
+# Run this workflow on pushes or pull requests to main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-- name: Install dummy dependencies
-  run: |
-    mkdir -p .dummy-cache-folder
-    echo "Simulating dependencies" > .dummy-cache-folder/info.txt
-    - name: Install dependencies
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout your code from GitHub
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Prime the cache
+    - name: Prime cache step
+      id: prime-cache-b16587c
+      uses: actions/cache@v4
+      with:
+        path: |
+          .dummy-cache-folder
+        key: cache-b16587c
+
+    # Step 3: Show cache hit/miss
+    - name: Show cache result
+      run: echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit }}"
+
+    # Step 4: Create dummy "dependencies"
+    - name: Install dummy dependencies
       run: |
-        pip install -r requirements.txt || npm install
+        mkdir -p .dummy-cache-folder
+        echo "Simulating dependencies" > .dummy-cache-folder/info.txt
