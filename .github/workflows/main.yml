@@ -11,32 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step 2: Prepare dummy folder (must have some content before caching)
       - name: Prepare dummy folder
         run: |
           mkdir -p .dummy-cache-folder
           echo "Initial dummy content" > .dummy-cache-folder/info.txt
 
-      # Step 3: Prime the cache
-      - name: Prime cache step
-        id: prime-cache-b16587c
+      # ✅ REQUIRED NAME
+      - name: prime-cache-b16587c
+        id: cache-deps
         uses: actions/cache@v4
         with:
           path: .dummy-cache-folder
           key: cache-b16587c
-          restore-keys: |
-            cache-b16587c
 
-      # Step 4: Show cache result safely
       - name: Show cache result
         run: |
-          echo "Cache hit? ${{ steps.prime-cache-b16587c.outputs.cache-hit || 'false' }}"
+          echo "Cache hit? ${{ steps.cache-deps.outputs.cache-hit }}"
 
-      # Step 5: Update dummy dependencies
       - name: Install dummy dependencies
         run: |
           echo "Simulating updated dependencies" > .dummy-cache-folder/info.txt
